@@ -46,8 +46,9 @@ router.get('/:id', async (req, res) => {
       ],
     });
 
-    const category = dbCategoryData.get({ plain: true });
-    res.render('category', { category, loggedIn: req.session.loggedIn});
+    //const category = dbCategoryData.get({ plain: true });
+    //res.render('category', { category, loggedIn: req.session.loggedIn});
+    res.status(200).json(dbCategoryData);
   } catch (err) {
     console.log(err);
     res.status(500).json(err);
@@ -68,11 +69,7 @@ router.put('/:id', (req, res) => {
   // update a category by its `id` value
   Category.update(
     {
-      sequelize: req.body.sequelize,
-      timestamps: req.body.timestamps,
-      freezeTableName: req.body.freezeTableName,
-      underscored: req.body.underscored,
-      modelName: req.body.modelName,
+      category_name: req.body.categoryName,
     },
     {
       where: {
@@ -81,7 +78,7 @@ router.put('/:id', (req, res) => {
     }
   )
     .then((updatedCategory) => {
-      res.json(updatedCategory);
+      res.status(200).json(updatedCategory);
     })
     .catch((err) => res.json(err));
 });
