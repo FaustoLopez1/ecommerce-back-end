@@ -44,8 +44,7 @@ router.get('/:id', async (req, res) => {
       ],
     });
 
-    const tag = dbTagData.get({ plain: true });
-    res.render('tag', { tag, loggedIn: req.session.loggedIn });
+   res.status(200).json(dbTagData);
   } catch (err) {
     console.log(err);
     res.status(500).json(err);
@@ -67,13 +66,16 @@ router.put('/:id', (req, res) => {
   // update a tag's name by its `id` value
   Tag.update(
     {
+      tag_name: req.body.tagName,
+    },
+    {
       where: {
         id: req.params.id
       },
     }
   )
     .then((updatedTag) => {
-      res.json(updatedTag);
+      res.status(200).json(updatedTag);
     })
     .catch((err) => res.json(err));
 });

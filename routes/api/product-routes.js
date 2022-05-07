@@ -52,8 +52,7 @@ router.get('/:id', async (req, res) => {
       ],
     });
 
-    const product = dbProductData.get({ plain: true });
-    res.render('product', { product, loggedIn: req.session.loggedIn });
+    res.status(200).json(dbProductData);
   } catch (err) {
     console.log(err);
     res.status(500).json(err);
@@ -61,40 +60,25 @@ router.get('/:id', async (req, res) => {
 });
 
 // create new product
-router.post('/', (req, res) => {
+router.post('/', async (req, res) => {
 
-  Product.create(req.body)({
-    product_name: req.body.product_name,
-    price: req.body.price,
-    stock: req.body.stock,
-    category_id: req.body.category_id,
-    tagIds: req.body.tagIds
-  })
-    .then((product) => {
-      // if there's product tags, we need to create pairings to bulk create in the ProductTag model
-      if (req.body.tagIds.length) {
-        const productTagIdArr = req.body.tagIds.map((tag_id) => {
-          return {
-            product_id: product.id,
-            tag_id,
-          };
-        });
-        return ProductTag.bulkCreate(productTagIdArr);
-      }
-      // if no product tags, just respond
-      res.status(200).json(product);
-    })
-    .then((productTagIds) => res.status(200).json(productTagIds))
-    .catch((err) => {
-      console.log(err);
-      res.status(400).json(err);
-    });
+  try {
+    const productData = await Product.create(req.body);
+    res.status(200).json(productData);
+  } catch (err) {
+    res.status(400).json(err);
+  }
+
 });
 
 // update product
 router.put('/:id', async (req, res) => {
   // update product data
-  Product.update(req.body, {
+  Product.update(
+    {
+      product_name: req.body.productName,
+    },
+    {
     where: {
       id: req.params.id,
     },

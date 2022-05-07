@@ -46,8 +46,6 @@ router.get('/:id', async (req, res) => {
       ],
     });
 
-    //const category = dbCategoryData.get({ plain: true });
-    //res.render('category', { category, loggedIn: req.session.loggedIn});
     res.status(200).json(dbCategoryData);
   } catch (err) {
     console.log(err);
